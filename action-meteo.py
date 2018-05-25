@@ -32,10 +32,24 @@ def read_configuration_file(configuration_file):
 
 
 def meteo_generale_callback(hermes, intentMessage):
+    print('GOT INTENT')
+    print('GOT INTENT')
+    print('GOT INTENT')
+    print('GOT INTENT')
+    print('GOT INTENT')
+    print('GOT INTENT')
+
     tts_sentence = "yoyoyo"
     hermes.publish_end_session(intentMessage.session_id, tts_sentence)
 
 if __name__ == "__main__":
+
+    print('IN ACTION')
+    print('IN ACTION')
+    print('IN ACTION')
+    print('IN ACTION')
+    print('IN ACTION')
+    print('IN ACTION')
 
     with Hermes(HERMES_HOST) as h:
 
