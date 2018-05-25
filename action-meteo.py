@@ -86,7 +86,7 @@ def parse_open_weather_map_forecast_response(response, location):
 
 def meteo_generale_callback(hermes, intentMessage):
 
-    conf = read_configuration_file(configuration_file)
+    conf = read_configuration_file(CONFIG_INI)
     weather_forecast = get_weather_forecast(conf, {})
 
     response = (    "Il fait {0}. " 
