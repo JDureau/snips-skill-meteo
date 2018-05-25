@@ -1,5 +1,5 @@
-#!/usr/bin/env python2
-# -*-: coding utf-8 -*-
+# coding: utf-8
+from __future__ import unicode_literals
 
 import ConfigParser
 from hermes_python.hermes import Hermes
