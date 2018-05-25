@@ -37,7 +37,7 @@ def meteo_generale_callback(hermes, intentMessage):
     print('GOT INTENT')
     print('GOT INTENT')
 
-    tts_sentence = "yoyoyo"
+    tts_sentence = "il fait un temps de chiote"
     hermes.publish_end_session(intentMessage.session_id, tts_sentence)
 
 if __name__ == "__main__":
