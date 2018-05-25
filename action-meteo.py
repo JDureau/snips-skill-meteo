@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-# -*-: coding utf-8 -*-
+# coding: utf-8
 
 import ConfigParser
 from hermes_python.hermes import Hermes
@@ -88,9 +88,9 @@ def meteo_generale_callback(hermes, intentMessage):
 
     weather_forecast = get_weather_forecast({})
 
-    response = (    "Il fait {0} degrés. " 
-                    "La temperature max est de {1}. "
-                    "minimum {2}.").format(
+    response = (    u"Il fait {0} degrés. " 
+                    u"La temperature max est de {1}. "
+                    u"minimum {2}.").format(
             weather_forecast["temperature"], 
             weather_forecast["temperatureMax"], 
             weather_forecast["temperatureMin"]
