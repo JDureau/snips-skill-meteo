@@ -88,8 +88,8 @@ def meteo_generale_callback(hermes, intentMessage):
 
     weather_forecast = get_weather_forecast({})
 
-    response = (    "Il fait {0} degrés. " 
-                    "La température max est de {1}. "
+    response = (    "Il fait {0} degres. " 
+                    "La temperature max est de {1}. "
                     "minimum {2}.").format(
             weather_forecast["temperature"], 
             weather_forecast["temperatureMax"], 
