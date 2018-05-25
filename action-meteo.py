@@ -44,7 +44,7 @@ def read_configuration_file(configuration_file):
         return dict()
 
 
-def get_weather_forecast(slots):
+def get_weather_forecast(conf, slots):
     '''
     Parse the query slots, and fetch the weather forecast from Open Weather Map's API
     '''
@@ -54,7 +54,7 @@ def get_weather_forecast(slots):
             or slots.get("forecast_geographical_poi", None) \
             or DEFAULT_CITY_NAME
     forecast_url = "{0}/forecast?q={1}&APPID={2}&units={3}".format(
-        WEATHER_API_BASE_URL, location, WEATHER_API_KEY, UNITS)
+        WEATHER_API_BASE_URL, conf["DEFAULT_CITY_NAME"], conf["WEATHER_API_KEY"], UNITS)
     r_forecast = requests.get(forecast_url)
     return parse_open_weather_map_forecast_response(r_forecast.json(), location)
 
@@ -86,7 +86,8 @@ def parse_open_weather_map_forecast_response(response, location):
 
 def meteo_generale_callback(hermes, intentMessage):
 
-    weather_forecast = get_weather_forecast({})
+    conf = read_configuration_file(configuration_file)
+    weather_forecast = get_weather_forecast(conf, {})
 
     response = (    "Il fait {0}. " 
                     "La temperature max aujourd'hui est de {1}, minimum {2}."
