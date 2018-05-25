@@ -1,34 +1,44 @@
 #!/usr/bin/env python2
+# -*-: coding utf-8 -*-
+
+import ConfigParser
 from hermes_python.hermes import Hermes
+from hermes_python.ontology import *
+import io
 
-MQTT_IP_ADDR = "localhost"
-MQTT_PORT = 1883
-MQTT_ADDR = "{}:{}".format(MQTT_IP_ADDR, str(MQTT_PORT))
+from snipsmopidy.snipsmopidy import SnipsMopidy
 
-def intent_received(hermes, intent_message):
-    sentence = 'You asked for '
+CONFIGURATION_ENCODING_FORMAT = "utf-8"
+CONFIG_INI = "config.ini"
 
-    print(intent_message.intent.intent_name)
+HOSTNAME = "localhost"
 
-    if intent_message.intent.intent_name == 'MeteoGenerale':
-        print('meteo')
-        sentence += 'the weather '
-    else:
-        hermes.publish_end_session(intent_message.session_id, None)
+HERMES_HOST = "{}:1883".format(HOSTNAME)
+MOPIDY_HOST = HOSTNAME
 
-    forecast_country_slot = intent_message.slots.forecast_country
-    forecast_locality_slot = intent_message.slots.forecast_locality
-    forecast_start_datetime_slot = intent_message.slots.forecast_start_datetime
-
-    if forecast_locality_slot is not None:
-        sentence += 'in ' + forecast_locality_slot.first().value.value
-    if forecast_country_slot is not None:
-        sentence += 'in ' + forecast_country_slot.first().value.value
-    if forecast_start_datetime_slot is not None:
-        sentence += forecast_start_datetime_slot[0].raw_value
-
-    hermes.publish_end_session(intent_message.session_id, sentence)
+class SnipsConfigParser(ConfigParser.SafeConfigParser):
+    def to_dict(self):
+        return {section : {option_name : option for option_name, option in self.items(section)} for section in self.sections()}
 
 
-with Hermes(MQTT_ADDR) as h:
-    h.subscribe_intents(intent_received).start()
+def read_configuration_file(configuration_file):
+    try:
+        with io.open(configuration_file, encoding=CONFIGURATION_ENCODING_FORMAT) as f:
+            conf_parser = SnipsConfigParser()
+            conf_parser.readfp(f)
+            return conf_parser.to_dict()
+    except (IOError, ConfigParser.Error) as e:
+        return dict()
+
+
+def meteo_generale_callback(hermes, intentMessage):
+    tts_sentence = "yoyoyo"
+    hermes.publish_end_session(intentMessage.session_id, tts_sentence)
+
+if __name__ == "__main__":
+
+    with Hermes(HERMES_HOST) as h:
+
+        h\
+            .subscribe_intent("MeteoGenerale", meteo_generale_callback)
+            .loop_forever()
