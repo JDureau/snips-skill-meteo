@@ -52,5 +52,5 @@ if __name__ == "__main__":
     with Hermes(HERMES_HOST) as h:
 
         h\
-            .subscribe_intent("MeteoGenerale", meteo_generale_callback)\
+            .subscribe_intent("Joseph:MeteoGenerale", meteo_generale_callback)\
             .loop_forever()
