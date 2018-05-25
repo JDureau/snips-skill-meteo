@@ -96,7 +96,7 @@ def meteo_generale_callback(hermes, intentMessage):
             weather_forecast["temperatureMin"]
         )
 
-    hermes.publish_end_session(intentMessage.session_id, tts_sentence)
+    hermes.publish_end_session(intentMessage.session_id, response)
 
 if __name__ == "__main__":
 
