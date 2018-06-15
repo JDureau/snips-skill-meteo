@@ -84,8 +84,9 @@ def parse_open_weather_map_forecast_response(response, location, time):
     today = fromtimestamp(response["list"][0]["dt"]).day
     print()
     print(time)
-    print(time.raw_value)
-    print(time.value)
+    print(time.from)
+    print(time.to)
+    print(time.kind)
     print(time.type())
     print()
     value = time.get("value", {})
