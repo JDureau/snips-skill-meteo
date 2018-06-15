@@ -85,7 +85,6 @@ def parse_open_weather_map_forecast_response(response, location, time):
     print()
     print(time)
     print(time)
-    print(time.to)
     print(time.kind)
     print(time.type())
     print()
