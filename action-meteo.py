@@ -69,6 +69,9 @@ def get_weather_forecast(conf, slots):
             or slots.get("forecast_region", None)  \
             or slots.get("forecast_geographical_poi", None) \
             or DEFAULT_CITY_NAME
+    print()
+    print(slots)
+    print()
     time = slots.get("forecast_start_datetime", {})
     forecast_url = "{0}/forecast?q={1}&APPID={2}&units={3}".format(
         WEATHER_API_BASE_URL, conf.get("DEFAULT_CITY_NAME"), conf["global"].get("weather_api_key"), UNITS)
