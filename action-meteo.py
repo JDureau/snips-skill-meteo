@@ -86,14 +86,19 @@ def parse_open_weather_map_forecast_response(response, location, time):
     today = fromtimestamp(response["list"][0]["dt"]).day
     value = time.get("value", {})
     if value.get("kind", None) == "TimeInterval":
+        print("INTERVAL!!")
         target_period_forecasts = filter(
             lambda forecast: 
                 value.get("from", None) <= fromtimestamp(forecast["dt"])
                 and fromtimestamp(forecast["dt"]) <= value.get("to", None) 
                 , response["list"]
         )
+        print(len(target_period_forecasts))
     else:
         target_period_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"]).day==today, response["list"])
+        print("TODAY")
+        print(len(target_period_forecasts))
+
     future_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"])>=datetime.datetime.now(), target_period_forecasts)
 
     all_min = [x["main"]["temp_min"] for x in future_forecasts]
