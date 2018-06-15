@@ -98,7 +98,7 @@ def parse_open_weather_map_forecast_response(response, location):
         "temperature": int(today_forecasts[0]["main"]["temp"]),
         "temperatureMin": int(min(all_min)),
         "temperatureMax": int(max(all_max)),
-        "rainTime": 4, #rain_time,
+        "rainTime": rain_time,
         "mainCondition": max(set(all_conditions), key=all_conditions.count).lower()
     }
 
