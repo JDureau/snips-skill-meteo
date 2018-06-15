@@ -28,7 +28,6 @@ HERMES_HOST = "{}:1883".format(HOSTNAME)
 
 # WEATHER API
 WEATHER_API_BASE_URL = "http://api.openweathermap.org/data/2.5"
-WEATHER_API_KEY = "2583d61a4071eddb554252d5977b567a"
 DEFAULT_CITY_NAME = "Clichy"
 UNITS = "metric" 
 
@@ -94,6 +93,10 @@ def parse_open_weather_map_forecast_response(response, location):
 def intent_received(hermes, intent_message):
 
     conf = read_configuration_file(CONFIG_INI)
+    print()
+    print("CONF!!!")
+    print(conf)
+    print()
     weather_forecast = get_weather_forecast(conf, {})
 
     if intent_message.intent.intent_name == 'searchWeatherForecast':
