@@ -32,6 +32,19 @@ DEFAULT_CITY_NAME = "Clichy"
 UNITS = "metric" 
 
 
+def verbalise_hour(i):
+    if i == 0:
+        return "minuit"
+    elif i == 1:
+        return "une heure"
+    elif i == 12:
+        return "midi"
+    elif i == 21:
+        return "ving et une heures"
+    else:
+        return "{0} heures".format(str(i)) 
+
+
 class SnipsConfigParser(ConfigParser.SafeConfigParser):
     def to_dict(self):
         return {section : {option_name : option for option_name, option in self.items(section)} for section in self.sections()}
@@ -105,7 +118,7 @@ def intent_received(hermes, intent_message):
         )
 
         if weather_forecast["rainTime"]:
-            sentence += " Il risque de pleuvoir à {0}.".format(str(weather_forecast["rainTime"]))
+            sentence += " Il risque de pleuvoir à {0}.".format(verbalise_hour(weather_forecast["rainTime"]))
 
         hermes.publish_end_session(intent_message.session_id, sentence)
 
