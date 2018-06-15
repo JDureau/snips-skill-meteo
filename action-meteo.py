@@ -71,7 +71,7 @@ def parse_open_weather_map_forecast_response(response, location):
     '''
     today = fromtimestamp(response["list"][0]["dt"]).day
     today_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"]).day==today, response["list"])
-    future_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"])>=datetime.datetime.now(), response["list"])
+    future_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"])>=datetime.datetime.now(), today_forecasts)
 
     all_min = [x["main"]["temp_min"] for x in future_forecasts]
     all_max = [x["main"]["temp_max"] for x in future_forecasts]
