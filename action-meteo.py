@@ -77,7 +77,7 @@ def parse_open_weather_map_forecast_response(response, location):
     all_max = [x["main"]["temp_max"] for x in future_forecasts]
     all_conditions = [x["weather"][0]["main"] for x in future_forecasts]
     rain_forecasts = filter(lambda forecast: forecast["weather"][0]["main"] == "Rain", future_forecasts)
-    rain_time = fromtimestamp(rain_forecasts[0]["dt"]).hour if len(rain) > 0 else None
+    rain_time = fromtimestamp(rain_forecasts[0]["dt"]).hour if len(rain_forecasts) > 0 else None
     
     return {
         "location": location,
