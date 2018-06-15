@@ -65,10 +65,9 @@ def get_weather_forecast(conf, slots):
     Parse the query slots, and fetch the weather forecast from Open Weather Map's API
     '''
     location = DEFAULT_CITY_NAME
-    print()
-    print(slots)
-    print()
     time = slots.forecast_start_datetime.first()
+    print()
+    print(time)
     forecast_url = "{0}/forecast?q={1}&APPID={2}&units={3}".format(
         WEATHER_API_BASE_URL, conf.get("DEFAULT_CITY_NAME"), conf["global"].get("weather_api_key"), UNITS)
     r_forecast = requests.get(forecast_url)
@@ -83,6 +82,8 @@ def parse_open_weather_map_forecast_response(response, location, time):
     Parse the output of Open Weather Map's forecast endpoint
     '''
     today = fromtimestamp(response["list"][0]["dt"]).day
+    print()
+    print(time)
     value = time.get("value", {})
     print()
     print(time)
