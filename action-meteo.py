@@ -76,17 +76,16 @@ def parse_open_weather_map_forecast_response(response, location):
     all_min = [x["main"]["temp_min"] for x in future_forecasts]
     all_max = [x["main"]["temp_max"] for x in future_forecasts]
     all_conditions = [x["weather"][0]["main"] for x in future_forecasts]
-    rain = filter(lambda forecast: forecast["weather"][0]["main"] == "Rain", future_forecasts)
-    snow = filter(lambda forecast: forecast["weather"][0]["main"] == "Snow", future_forecasts)
-
+    rain_forecasts = filter(lambda forecast: forecast["weather"][0]["main"] == "Rain", future_forecasts)
+    rain_time = fromtimestamp(rain_forecasts[0]["dt"]).hour if len(rain) > 0 else None
+    
     return {
         "location": location,
         "inLocation": " in {0}".format(location) if location else "",         
         "temperature": int(today_forecasts[0]["main"]["temp"]),
         "temperatureMin": int(min(all_min)),
         "temperatureMax": int(max(all_max)),
-        "rain": len(rain) > 0,
-        "snow": len(snow) > 0,
+        "rainTime": 4, #rain_time,
         "mainCondition": max(set(all_conditions), key=all_conditions.count).lower()
     }
 
@@ -98,12 +97,15 @@ def intent_received(hermes, intent_message):
 
     if intent_message.intent.intent_name == 'searchWeatherForecast':
         sentence = (    "Il fait {0}. " 
-                    "La température max aujourd'hui est de {1}, minimum {2}."
+                    "Il va faire entre {1} et {2}."
         ).format(
             weather_forecast["temperature"], 
             weather_forecast["temperatureMax"], 
             weather_forecast["temperatureMin"]
         )
+
+        if weather_forecast["rainTime"]:
+            sentence += " Il risque de pleuvoir à {0}.".format(str(weather_forecast["rainTime"]))
 
         hermes.publish_end_session(intent_message.session_id, sentence)
 
