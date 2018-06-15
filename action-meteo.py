@@ -60,6 +60,9 @@ def get_weather_forecast(conf, slots):
     forecast_url = "{0}/forecast?q={1}&APPID={2}&units={3}".format(
         WEATHER_API_BASE_URL, conf.get("DEFAULT_CITY_NAME"), conf.get("WEATHER_API_KEY"), UNITS)
     r_forecast = requests.get(forecast_url)
+    print()
+    print(forecast_url)
+    print()
     return parse_open_weather_map_forecast_response(r_forecast.json(), location)
 
 
