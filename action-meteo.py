@@ -71,12 +71,13 @@ def parse_open_weather_map_forecast_response(response, location):
     '''
     today = fromtimestamp(response["list"][0]["dt"]).day
     today_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"]).day==today, response["list"])
-    
-    all_min = [x["main"]["temp_min"] for x in today_forecasts]
-    all_max = [x["main"]["temp_max"] for x in today_forecasts]
-    all_conditions = [x["weather"][0]["main"] for x in today_forecasts]
-    rain = filter(lambda forecast: forecast["weather"][0]["main"] == "Rain", today_forecasts)
-    snow = filter(lambda forecast: forecast["weather"][0]["main"] == "Snow", today_forecasts)
+    future_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"])>=datetime.datetime.now(), response["list"])
+
+    all_min = [x["main"]["temp_min"] for x in future_forecasts]
+    all_max = [x["main"]["temp_max"] for x in future_forecasts]
+    all_conditions = [x["weather"][0]["main"] for x in future_forecasts]
+    rain = filter(lambda forecast: forecast["weather"][0]["main"] == "Rain", future_forecasts)
+    snow = filter(lambda forecast: forecast["weather"][0]["main"] == "Snow", future_forecasts)
 
     return {
         "location": location,
