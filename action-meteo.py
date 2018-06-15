@@ -14,6 +14,10 @@ import requests
 
 fromtimestamp = datetime.datetime.fromtimestamp
 
+MQTT_IP_ADDR = "localhost"
+MQTT_PORT = 1883
+MQTT_ADDR = "{}:{}".format(MQTT_IP_ADDR, str(MQTT_PORT))
+
 
 CONFIGURATION_ENCODING_FORMAT = "utf-8"
 CONFIG_INI = "config.ini"
@@ -82,22 +86,6 @@ def parse_open_weather_map_forecast_response(response, location):
         "snow": len(snow) > 0,
         "mainCondition": max(set(all_conditions), key=all_conditions.count).lower()
     }
-
-
-def meteo_generale_callback(hermes, intentMessage):
-
-    conf = read_configuration_file(CONFIG_INI)
-    weather_forecast = get_weather_forecast(conf, {})
-
-    response = (    "Il fait {0}. " 
-                    "La temperature max aujourd'hui est de {1}, minimum {2}."
-        ).format(
-            weather_forecast["temperature"], 
-            weather_forecast["temperatureMax"], 
-            weather_forecast["temperatureMin"]
-        )
-
-    hermes.publish_end_session(intentMessage.session_id, response)
 
 
 def intent_received(hermes, intent_message):
