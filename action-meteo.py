@@ -105,7 +105,7 @@ def parse_open_weather_map_forecast_response(response, location, time):
     return {
         "location": location,
         "inLocation": " in {0}".format(location) if location else "",         
-        "temperature": int(today_forecasts[0]["main"]["temp"]),
+        "temperature": int(target_period_forecasts[0]["main"]["temp"]),
         "temperatureMin": int(min(all_min)),
         "temperatureMax": int(max(all_max)),
         "rainTime": rain_time,
