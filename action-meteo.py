@@ -84,11 +84,12 @@ def parse_open_weather_map_forecast_response(response, location, time):
     Parse the output of Open Weather Map's forecast endpoint
     '''
     today = fromtimestamp(response["list"][0]["dt"]).day
-    if time.get("value", None).get("kind", None) == "TimeInterval":
+    value = time.get("value", {})
+    if value.get("kind", None) == "TimeInterval":
         target_period_forecasts = filter(
             lambda forecast: 
-                time.get("value", None).get("from", None) <= fromtimestamp(forecast["dt"])
-                and fromtimestamp(forecast["dt"]) <= time.get("value", None).get("to", None) 
+                value.get("from", None) <= fromtimestamp(forecast["dt"])
+                and fromtimestamp(forecast["dt"]) <= value.get("to", None) 
                 , response["list"]
         )
     future_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"])>=datetime.datetime.now(), target_period_forecasts)
