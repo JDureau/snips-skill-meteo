@@ -99,10 +99,23 @@ def meteo_generale_callback(hermes, intentMessage):
 
     hermes.publish_end_session(intentMessage.session_id, response)
 
-if __name__ == "__main__":
 
-    with Hermes(HERMES_HOST) as h:
+def intent_received(hermes, intent_message):
 
-        h\
-            .subscribe_intent("Joseph:MeteoGenerale", meteo_generale_callback)\
-            .loop_forever()
+    conf = read_configuration_file(CONFIG_INI)
+    weather_forecast = get_weather_forecast(conf, {})
+
+    if intent_message.intent.intent_name == 'searchWeatherForecast':
+        sentence = (    "Il fait {0}. " 
+                    "La temperature max aujourd'hui est de {1}, minimum {2}."
+        ).format(
+            weather_forecast["temperature"], 
+            weather_forecast["temperatureMax"], 
+            weather_forecast["temperatureMin"]
+        )
+
+        hermes.publish_end_session(intent_message.session_id, sentence)
+
+
+with Hermes(MQTT_ADDR) as h:
+    h.subscribe_intents(intent_received).start()
