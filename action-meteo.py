@@ -64,11 +64,7 @@ def get_weather_forecast(conf, slots):
     '''
     Parse the query slots, and fetch the weather forecast from Open Weather Map's API
     '''
-    location = slots.get("forecast_locality", None) \
-            or slots.get("forecast_country", None)  \
-            or slots.get("forecast_region", None)  \
-            or slots.get("forecast_geographical_poi", None) \
-            or DEFAULT_CITY_NAME
+    location = DEFAULT_CITY_NAME
     print()
     print(slots)
     print()
