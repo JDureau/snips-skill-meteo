@@ -93,15 +93,11 @@ def parse_open_weather_map_forecast_response(response, location):
 def intent_received(hermes, intent_message):
 
     conf = read_configuration_file(CONFIG_INI)
-    print()
-    print("CONF!!!")
-    print(conf)
-    print()
     weather_forecast = get_weather_forecast(conf, {})
 
     if intent_message.intent.intent_name == 'searchWeatherForecast':
         sentence = (    "Il fait {0}. " 
-                    "La temperature max aujourd'hui est de {1}, minimum {2}."
+                    "La température max aujourd'hui est de {1}, minimum {2}."
         ).format(
             weather_forecast["temperature"], 
             weather_forecast["temperatureMax"], 
