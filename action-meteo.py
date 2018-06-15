@@ -69,22 +69,29 @@ def get_weather_forecast(conf, slots):
             or slots.get("forecast_region", None)  \
             or slots.get("forecast_geographical_poi", None) \
             or DEFAULT_CITY_NAME
+    time = slots.get("forecast_start_datetime", None)
     forecast_url = "{0}/forecast?q={1}&APPID={2}&units={3}".format(
         WEATHER_API_BASE_URL, conf.get("DEFAULT_CITY_NAME"), conf["global"].get("weather_api_key"), UNITS)
     r_forecast = requests.get(forecast_url)
     print()
     print(forecast_url)
     print()
-    return parse_open_weather_map_forecast_response(r_forecast.json(), location)
+    return parse_open_weather_map_forecast_response(r_forecast.json(), location, time)
 
 
-def parse_open_weather_map_forecast_response(response, location):
+def parse_open_weather_map_forecast_response(response, location, time):
     '''
     Parse the output of Open Weather Map's forecast endpoint
     '''
     today = fromtimestamp(response["list"][0]["dt"]).day
-    today_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"]).day==today, response["list"])
-    future_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"])>=datetime.datetime.now(), today_forecasts)
+    if time.get("value", None).get("kind", None) == "TimeInterval":
+        target_period_forecasts = filter(
+            lambda forecast: 
+                time.get("value", None).get("from", None) <= fromtimestamp(forecast["dt"])
+                and fromtimestamp(forecast["dt"]) <= time.get("value", None).get("to", None) 
+                , response["list"]
+        )
+    future_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"])>=datetime.datetime.now(), target_period_forecasts)
 
     all_min = [x["main"]["temp_min"] for x in future_forecasts]
     all_max = [x["main"]["temp_max"] for x in future_forecasts]
@@ -113,8 +120,8 @@ def intent_received(hermes, intent_message):
                     "Il va faire entre {1} et {2}."
         ).format(
             weather_forecast["temperature"], 
-            weather_forecast["temperatureMax"], 
-            weather_forecast["temperatureMin"]
+            weather_forecast["temperatureMin"], 
+            weather_forecast["temperatureMax"]
         )
 
         if weather_forecast["rainTime"]:
