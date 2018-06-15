@@ -85,6 +85,11 @@ def parse_open_weather_map_forecast_response(response, location, time):
     '''
     today = fromtimestamp(response["list"][0]["dt"]).day
     value = time.get("value", {})
+    print()
+    print(time)
+    print(value)
+    print(value.get("kind", None))
+    print()
     if value.get("kind", None) == "TimeInterval":
         print("INTERVAL!!")
         target_period_forecasts = filter(
