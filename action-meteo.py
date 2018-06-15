@@ -72,7 +72,7 @@ def get_weather_forecast(conf, slots):
     print()
     print(slots)
     print()
-    time = slots.get("forecast_start_datetime", {})
+    time = slots.forecast_start_datetime.first()
     forecast_url = "{0}/forecast?q={1}&APPID={2}&units={3}".format(
         WEATHER_API_BASE_URL, conf.get("DEFAULT_CITY_NAME"), conf["global"].get("weather_api_key"), UNITS)
     r_forecast = requests.get(forecast_url)
@@ -129,7 +129,9 @@ def parse_open_weather_map_forecast_response(response, location, time):
 def intent_received(hermes, intent_message):
 
     conf = read_configuration_file(CONFIG_INI)
-    weather_forecast = get_weather_forecast(conf, {})
+    slots = intent_message.slots
+    weather_forecast = get_weather_forecast(conf, slots)
+
 
     if intent_message.intent.intent_name == 'searchWeatherForecast':
         sentence = (    "Il fait {0}. " 
