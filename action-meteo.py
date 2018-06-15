@@ -92,6 +92,8 @@ def parse_open_weather_map_forecast_response(response, location, time):
                 and fromtimestamp(forecast["dt"]) <= value.get("to", None) 
                 , response["list"]
         )
+    else:
+        target_period_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"]).day==today, response["list"])
     future_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"])>=datetime.datetime.now(), target_period_forecasts)
 
     all_min = [x["main"]["temp_min"] for x in future_forecasts]
