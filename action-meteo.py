@@ -8,6 +8,7 @@ import io
 
 import datetime
 import dateutil.parser
+import pytz
 import json
 
 import requests
@@ -105,12 +106,12 @@ def parse_open_weather_map_forecast_response(response, location, time):
         print('from')
         from_date = dateutil.parser.parse(time.from_date)
         to_date = dateutil.parser.parse(time.to_date)
-        forecast = response["list"][0] 
+        forecast_time = pytz.utc.localize(fromtimestamp(response["list"][0]))
         print(from_date)
         print(to_date)
-        print(fromtimestamp(forecast["dt"]))
-        print(from_date <= fromtimestamp(forecast["dt"]))
-        print(to_date >= fromtimestamp(forecast["dt"]))
+        print(forecast_time)
+        print(from_date <= forecast_time)
+        print(to_date >= forecast_time)
 
         target_period_forecasts = filter(
             lambda forecast: 
