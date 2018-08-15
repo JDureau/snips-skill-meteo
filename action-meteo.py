@@ -140,7 +140,8 @@ def parse_open_weather_map_forecast_response(response, location, time, conf):
         print("INSTANT TIME!!")
         print(time.grain)
 
-        if time.grain in range(4):
+        if time.grain >= 5:
+            # Seconds, Minutes or Hours
             date = dateutil.parser.parse(time.value)
 
             distances = map(lambda forecast: abs(pytz.utc.localize(fromtimestamp(forecast["dt"]))-date), response["list"])
@@ -149,11 +150,23 @@ def parse_open_weather_map_forecast_response(response, location, time, conf):
             target_period_forecasts = [response["list"][idx]]
 
         elif time.grain == 4:
+            # Days
             print("DAY")
             day = dateutil.parser.parse(time.value).day
             print(day)
 
             target_period_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"]).day == day, response["list"])
+            print(target_period_forecasts)
+
+        elif time.grain == 5:
+            # Weeks
+            print("DAY")
+            date = dateutil.parser.parse(time.value)
+
+            print(day)
+
+            target_period_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"]) >= date, response["list"])
+            target_period_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"]) - date < datetime.timedelta(7), target_period_forecasts)
             print(target_period_forecasts)
 
         else:
