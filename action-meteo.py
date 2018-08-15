@@ -96,29 +96,11 @@ def parse_open_weather_map_forecast_response(response, location, time):
     '''
     today = fromtimestamp(response["list"][0]["dt"]).day
 
-    print('TIME')
-    print(time)
-    print(type(time))
-
     if isinstance(time, TimeIntervalValue):
         print("INTERVAL!!")
 
-        print('from')
         from_date = dateutil.parser.parse(time.from_date)
         to_date = dateutil.parser.parse(time.to_date)
-
-        print(response["list"][0]["dt"])
-        print(fromtimestamp(response["list"][0]["dt"]))
-        print(pytz.utc.localize(fromtimestamp(response["list"][0]["dt"])))
-        forecast_time = pytz.utc.localize(fromtimestamp(response["list"][0]["dt"]))
-        print(from_date)
-        print(to_date)
-        print(forecast_time)
-        print(from_date <= forecast_time)
-        print(to_date >= forecast_time)
-
-        print("number of forecasts before filter")
-        print(len(response["list"]))
 
         target_period_forecasts = filter(
             lambda forecast: 
@@ -126,9 +108,22 @@ def parse_open_weather_map_forecast_response(response, location, time):
                 and pytz.utc.localize(fromtimestamp(forecast["dt"])) <= to_date 
                 , response["list"]
         )
-        print("number of forecasts after filter")
-        print(len(target_period_forecasts))
+
+    elif isinstance(time, InstantTime):
+        print("INSTANT TIME!!")
+        date = dateutil.parser.parse(time.value)
+
+        distances = map(lambda forecast: abs(pytz.utc.localize(fromtimestamp(forecast["dt"]))-date), response["list"])
+        val, idx = min((val, idx) for (idx, val) in enumerate(distances))
+
+        print(distances)
+        print(val)
+        print(idx)
+
+        target_period_forecasts = [response["list"][idx]]
+
     else:
+        # NOW
         target_period_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"]).day==today, response["list"])
         print("TODAY")
         print(len(target_period_forecasts))
