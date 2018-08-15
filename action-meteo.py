@@ -194,7 +194,7 @@ def intent_received(hermes, intent_message):
 
             sentence += "."
 
-            if rainTime is not None:
+            if weather_forecast["rainTime"] is not None:
                 sentence += " Il pleut."
 
         else:
