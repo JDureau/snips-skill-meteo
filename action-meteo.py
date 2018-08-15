@@ -76,7 +76,7 @@ def get_weather_forecast(conf, slots):
             locality = slot[0].slot_value.value.value
         elif slot_value == "forecast_start_datetime":
             print("GOT TIME")
-            time = slot[0].slot_value.value.value
+            time = slot[0].slot_value.value
 
 
     forecast_url = "{0}/forecast?q={1}&APPID={2}&units={3}".format(
