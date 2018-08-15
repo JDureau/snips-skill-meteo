@@ -165,8 +165,8 @@ def parse_open_weather_map_forecast_response(response, location, time, conf):
 
             print(date)
 
-            target_period_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"]) >= date, response["list"])
-            target_period_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"]) - date < datetime.timedelta(7), target_period_forecasts)
+            target_period_forecasts = filter(lambda forecast: pytz.utc.localize(fromtimestamp(forecast["dt"])) >= date, response["list"])
+            target_period_forecasts = filter(lambda forecast: pytz.utc.localize(fromtimestamp(forecast["dt"])) - date < datetime.timedelta(7), target_period_forecasts)
             print(target_period_forecasts)
 
         else:
