@@ -190,6 +190,9 @@ def parse_open_weather_map_forecast_response(response, location, time, conf):
     
 
 
+    if len(target_period_forecasts) == 0:
+        return None
+
     return {
         "location": location,
         "now": now,
