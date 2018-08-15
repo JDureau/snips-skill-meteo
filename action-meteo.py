@@ -85,7 +85,7 @@ def get_weather_forecast(conf, slots):
 
 
     forecast_url = "{0}/forecast?q={1}&APPID={2}&units={3}".format(
-        WEATHER_API_BASE_URL, locality, conf["secret"].get("weather_api_key"), UNITS)
+        WEATHER_API_BASE_URL, location, conf["secret"].get("weather_api_key"), UNITS)
     r_forecast = requests.get(forecast_url)
 
     print(forecast_url)
