@@ -7,6 +7,7 @@ from hermes_python.ontology import *
 import io
 
 import datetime
+import dateutil.parser
 import json
 
 import requests
@@ -102,13 +103,14 @@ def parse_open_weather_map_forecast_response(response, location, time):
         print("INTERVAL!!")
 
         print('from')
-        print(time.from_date)
-        print('to')
-        print(time.to_date)
+        from_date = dateutil.parser.parse(time.from_date)
+        to_date = dateutil.parser.parse(to_date)
         forecast = response["list"][0] 
+        print(from_date)
+        print(to_date)
         print(fromtimestamp(forecast["dt"]))
-        print(time.from_date <= fromtimestamp(forecast["dt"]))
-        print(time.to_date >= fromtimestamp(forecast["dt"]))
+        print(from_date <= fromtimestamp(forecast["dt"]))
+        print(to_date >= fromtimestamp(forecast["dt"]))
 
         target_period_forecasts = filter(
             lambda forecast: 
