@@ -98,6 +98,9 @@ def parse_open_weather_map_forecast_response(response, location, time, conf):
     Parse the output of Open Weather Map's forecast endpoint
     '''
 
+    if response["message"] == "city not found":
+        return None
+
     now = False
     contains_now = False
     print("location")
@@ -180,39 +183,44 @@ def intent_received(hermes, intent_message):
     conf = read_configuration_file(CONFIG_INI)
     print("CONF")
     print(conf)
-    slots = intent_message.slots
-    weather_forecast = get_weather_forecast(conf, slots)
 
     print(remove_intent_prefix(intent_message.intent.intent_name))
 
 
-
     if remove_intent_prefix(intent_message.intent.intent_name) == 'searchWeatherForecast':
 
-        if weather_forecast["now"]:
-            sentence = "Il fait {0}".format(weather_forecast["temperature"])
-            if not weather_forecast["here"]:
-                sentence += weather_forecast["inLocation"]
 
-            sentence += "."
+        slots = intent_message.slots
+        weather_forecast = get_weather_forecast(conf, slots)
 
-            if weather_forecast["rainTime"] is not None:
-                sentence += " Il pleut."
+        if weather_forecast is None:
+            sentence = "Je n'ai pas trouvé, désolé."
 
         else:
+            if weather_forecast["now"]:
+                sentence = "Il fait {0}".format(weather_forecast["temperature"])
+                if not weather_forecast["here"]:
+                    sentence += weather_forecast["inLocation"]
 
-            sentence = ("Il va faire entre {0} et {1}").format(
-                weather_forecast["temperatureMin"], 
-                weather_forecast["temperatureMax"]
-            )
+                sentence += "."
 
-            if not weather_forecast["here"]:
-                sentence += weather_forecast["inLocation"]
+                if weather_forecast["rainTime"] is not None:
+                    sentence += " Il pleut."
 
-            sentence += "."
+            else:
 
-            if weather_forecast["rainTime"]:
-                sentence += " Il risque de pleuvoir à {0}.".format(verbalise_hour(weather_forecast["rainTime"]))
+                sentence = ("Il va faire entre {0} et {1}").format(
+                    weather_forecast["temperatureMin"], 
+                    weather_forecast["temperatureMax"]
+                )
+
+                if not weather_forecast["here"]:
+                    sentence += weather_forecast["inLocation"]
+
+                sentence += "."
+
+                if weather_forecast["rainTime"]:
+                    sentence += " Il risque de pleuvoir à {0}.".format(verbalise_hour(weather_forecast["rainTime"]))
 
         hermes.publish_end_session(intent_message.session_id, sentence)
 
