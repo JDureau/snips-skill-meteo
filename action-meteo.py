@@ -109,7 +109,7 @@ def parse_open_weather_map_forecast_response(response, location, time):
                 , response["list"]
         )
 
-    elif isinstance(time, InstantTime):
+    elif isinstance(time, InstantTimeValue):
         print("INSTANT TIME!!")
         date = dateutil.parser.parse(time.value)
 
