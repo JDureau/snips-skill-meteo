@@ -99,7 +99,10 @@ def parse_open_weather_map_forecast_response(response, location, time):
     '''
     Parse the output of Open Weather Map's forecast endpoint
     '''
-    today = fromtimestamp(response["list"][0]["dt"]).day
+
+    now = False
+    contains_now = False
+    here = (location == conf.get("DEFAULT_CITY_NAME"))
 
     if isinstance(time, TimeIntervalValue):
         print("INTERVAL!!")
@@ -114,16 +117,22 @@ def parse_open_weather_map_forecast_response(response, location, time):
                 , response["list"]
         )
 
+        contains_now = (from_date <= pytz.utc.localize(datetime.datetime.utcnow()))
+
+
     elif isinstance(time, InstantTimeValue):
         print("INSTANT TIME!!")
         date = dateutil.parser.parse(time.value)
 
         distances = map(lambda forecast: abs(pytz.utc.localize(fromtimestamp(forecast["dt"]))-date), response["list"])
         val, idx = min((val, idx) for (idx, val) in enumerate(distances))
+
         target_period_forecasts = [response["list"][idx]]
 
     else:
         # NOW
+        now = True
+        contains_now = True
         date = pytz.utc.localize(datetime.datetime.utcnow())
 
         distances = map(lambda forecast: abs(pytz.utc.localize(fromtimestamp(forecast["dt"]))-date), response["list"])
@@ -152,7 +161,10 @@ def parse_open_weather_map_forecast_response(response, location, time):
 
     return {
         "location": location,
-        "inLocation": " in {0}".format(location) if location else "",         
+        "now": now,
+        "containsNow": contains_now,
+        "here": here,
+        "inLocation": " à {0}".format(location) if location else "",         
         "temperature": int(target_period_forecasts[0]["main"]["temp"]),
         "temperatureMin": int(min(all_min)),
         "temperatureMax": int(max(all_max)),
@@ -174,16 +186,31 @@ def intent_received(hermes, intent_message):
 
 
     if remove_intent_prefix(intent_message.intent.intent_name) == 'searchWeatherForecast':
-        sentence = (    "Il fait {0}. " 
-                    "Il va faire entre {1} et {2}."
-        ).format(
-            weather_forecast["temperature"], 
-            weather_forecast["temperatureMin"], 
-            weather_forecast["temperatureMax"]
-        )
 
-        if weather_forecast["rainTime"]:
-            sentence += " Il risque de pleuvoir à {0}.".format(verbalise_hour(weather_forecast["rainTime"]))
+        if weather_forecast["now"]:
+            sentence = "Il fait {0}"
+            if not weather_forecast["here"]:
+                sentence += weather_forecast["inLocation"]
+
+            sentence += "."
+
+            if rainTime is not None:
+                sentence += " Il pleut."
+
+        else:
+
+            sentence += ("Il va faire entre {1} et {2}").format(
+                weather_forecast["temperatureMin"], 
+                weather_forecast["temperatureMax"]
+            )
+
+            if not weather_forecast["here"]:
+                sentence += weather_forecast["inLocation"]
+
+            sentence += "."
+
+            if weather_forecast["rainTime"]:
+                sentence += " Il risque de pleuvoir à {0}.".format(verbalise_hour(weather_forecast["rainTime"]))
 
         hermes.publish_end_session(intent_message.session_id, sentence)
 
