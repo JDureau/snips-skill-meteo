@@ -208,7 +208,9 @@ def intent_received(hermes, intent_message):
                     sentence += " Il pleut."
 
             else:
-
+                print(slots.forecast_start_datetime)
+                sentence = slots.forecast_start_datetime.raw_value
+                print(sentence)
                 sentence = ("Il va faire entre {0} et {1}").format(
                     weather_forecast["temperatureMin"], 
                     weather_forecast["temperatureMax"]
