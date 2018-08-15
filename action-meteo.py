@@ -98,9 +98,18 @@ def parse_open_weather_map_forecast_response(response, location, time):
 
     if isinstance(time, TimeIntervalValue):
         print("INTERVAL!!")
+
+        print('from')
+        print(time.from_date)
+        print('to')
+        print(time.to_date)
+        print(fromtimestamp(forecast["dt"]))
+        print(time.from_date <= fromtimestamp(forecast["dt"]))
+        print(time.to_date >= fromtimestamp(forecast["dt"]))
+
         target_period_forecasts = filter(
             lambda forecast: 
-                value.get("from", None) <= fromtimestamp(forecast["dt"])
+                time.from_date <= fromtimestamp(forecast["dt"])
                 and fromtimestamp(forecast["dt"]) <= value.get("to", None) 
                 , response["list"]
         )
