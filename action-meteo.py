@@ -201,7 +201,7 @@ def intent_received(hermes, intent_message):
 
         else:
 
-            sentence = ("Il va faire entre {1} et {2}").format(
+            sentence = ("Il va faire entre {0} et {1}").format(
                 weather_forecast["temperatureMin"], 
                 weather_forecast["temperatureMax"]
             )
