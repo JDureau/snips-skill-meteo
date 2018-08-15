@@ -104,7 +104,7 @@ def parse_open_weather_map_forecast_response(response, location, time):
 
         print('from')
         from_date = dateutil.parser.parse(time.from_date)
-        to_date = dateutil.parser.parse(to_date)
+        to_date = dateutil.parser.parse(time.to_date)
         forecast = response["list"][0] 
         print(from_date)
         print(to_date)
