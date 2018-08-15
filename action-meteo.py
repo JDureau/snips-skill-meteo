@@ -30,7 +30,6 @@ HERMES_HOST = "{}:1883".format(HOSTNAME)
 
 # WEATHER API
 WEATHER_API_BASE_URL = "http://api.openweathermap.org/data/2.5"
-DEFAULT_CITY_NAME = "Clichy"
 UNITS = "metric" 
 
 def remove_intent_prefix(full_intent_name):
@@ -74,7 +73,7 @@ def get_weather_forecast(conf, slots):
     location = DEFAULT_CITY_NAME
 
 
-    locality = conf.get("DEFAULT_CITY_NAME")
+    locality = conf.get("default_city")
     time = None
 
     for (slot_value, slot) in slots.items():
@@ -104,9 +103,9 @@ def parse_open_weather_map_forecast_response(response, location, time, conf):
     contains_now = False
     print("location")
     print(location)
-    print(conf.get("DEFAULT_CITY_NAME"))
-    print(location == conf.get("DEFAULT_CITY_NAME"))
-    here = (location == conf.get("DEFAULT_CITY_NAME"))
+    print(conf.get("default_city"))
+    print(location == conf.get("default_city"))
+    here = (location == conf.get("default_city"))
 
     if isinstance(time, TimeIntervalValue):
         print("INTERVAL!!")
