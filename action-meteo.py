@@ -115,12 +115,17 @@ def parse_open_weather_map_forecast_response(response, location, time, conf):
         from_date = dateutil.parser.parse(time.from_date)
         to_date = dateutil.parser.parse(time.to_date)
 
+        print(from_date)
+        print(to_date)
+
         target_period_forecasts = filter(
             lambda forecast: 
                 from_date <= pytz.utc.localize(fromtimestamp(forecast["dt"]))
                 and pytz.utc.localize(fromtimestamp(forecast["dt"])) <= to_date 
                 , response["list"]
         )
+
+        print(len(target_period_forecasts))
 
         contains_now = (from_date <= pytz.utc.localize(datetime.datetime.utcnow()))
 
