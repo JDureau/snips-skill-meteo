@@ -25,18 +25,16 @@ CONFIGURATION_ENCODING_FORMAT = "utf-8"
 CONFIG_INI = "config.ini"
 
 HOSTNAME = "localhost"
-
 HERMES_HOST = "{}:1883".format(HOSTNAME)
 
 # WEATHER API
 WEATHER_API_BASE_URL = "http://api.openweathermap.org/data/2.5"
 UNITS = "metric" 
 
-def remove_intent_prefix(full_intent_name):
-    if ":" in full_intent_name:
-        return full_intent_name[full_intent_name.find(":")+1:]
-    else:
-        return full_intent_name
+
+
+
+
 
 def verbalise_hour(i):
     if i == 0:
@@ -49,6 +47,13 @@ def verbalise_hour(i):
         return "vingt et une heures"
     else:
         return "{0} heures".format(str(i)) 
+
+
+def remove_intent_prefix(full_intent_name):
+    if ":" in full_intent_name:
+        return full_intent_name[full_intent_name.find(":")+1:]
+    else:
+        return full_intent_name
 
 
 class SnipsConfigParser(ConfigParser.SafeConfigParser):
@@ -71,24 +76,19 @@ def get_weather_forecast(conf, slots):
     Parse the query slots, and fetch the weather forecast from Open Weather Map's API
     '''
 
-
     location = conf.get("default_city")
     time = None
 
     for (slot_value, slot) in slots.items():
-        print(slot_value)
         if slot_value in ["forecast_locality", "forecast_country", "forecast_region", "forecast_geographical_poi"]:
             location = slot[0].slot_value.value.value
         elif slot_value == "forecast_start_datetime":
-            print("GOT TIME")
             time = slot[0].slot_value.value
 
 
     forecast_url = "{0}/forecast?q={1}&APPID={2}&units={3}".format(
         WEATHER_API_BASE_URL, location, conf["secret"].get("weather_api_key"), UNITS)
     r_forecast = requests.get(forecast_url)
-
-    print(forecast_url)
 
     return parse_open_weather_map_forecast_response(r_forecast.json(), location, time, conf)
 
@@ -104,28 +104,14 @@ def parse_open_weather_map_forecast_response(response, location, time, conf):
     now = False
     contains_now = False
     more_than_a_day = False
-    print("location")
-    print(location)
-    print(conf.get("default_city"))
-    print(location == conf.get("default_city"))
     here = (location == conf.get("default_city"))
 
     if isinstance(time, TimeIntervalValue):
-        print("INTERVAL!!")
 
         from_date = dateutil.parser.parse(time.from_date)
         to_date = dateutil.parser.parse(time.to_date)
 
         more_than_a_day = (from_date.day != to_date.day)
-
-        print(from_date)
-        print(to_date)
-
-        print(map(
-            lambda forecast: 
-                pytz.utc.localize(fromtimestamp(forecast["dt"]))
-                , response["list"]
-        ))
 
         target_period_forecasts = filter(
             lambda forecast: 
@@ -134,14 +120,10 @@ def parse_open_weather_map_forecast_response(response, location, time, conf):
                 , response["list"]
         )
 
-        print(len(target_period_forecasts))
-
         contains_now = (from_date <= pytz.utc.localize(datetime.datetime.utcnow()))
 
 
     elif isinstance(time, InstantTimeValue):
-        print("INSTANT TIME!!")
-        print(time.grain)
 
         if time.grain >= 5:
             # Seconds, Minutes or Hours
@@ -154,25 +136,16 @@ def parse_open_weather_map_forecast_response(response, location, time, conf):
 
         elif time.grain == 4:
             # Days
-            print("DAY")
             day = dateutil.parser.parse(time.value).day
-            print(day)
-
             target_period_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"]).day == day, response["list"])
-            print(target_period_forecasts)
 
         elif time.grain == 3:
             # Weeks
-            print("DAY")
             date = dateutil.parser.parse(time.value)
-
             more_than_a_day = True
-
-            print(date)
 
             target_period_forecasts = filter(lambda forecast: pytz.utc.localize(fromtimestamp(forecast["dt"])) >= date, response["list"])
             target_period_forecasts = filter(lambda forecast: pytz.utc.localize(fromtimestamp(forecast["dt"])) - date < datetime.timedelta(7), target_period_forecasts)
-            print(target_period_forecasts)
 
         else:
             return None
@@ -195,18 +168,6 @@ def parse_open_weather_map_forecast_response(response, location, time, conf):
     rain_forecasts = filter(lambda forecast: forecast["weather"][0]["main"] == "Rain", target_period_forecasts)
     rain_time = fromtimestamp(rain_forecasts[0]["dt"]).hour if len(rain_forecasts) > 0 else None
     
-    print("all_min")
-    print(all_min)
-    print("all_max")
-    print(all_max)
-    print("all_conditions")
-    print(all_conditions)
-    print("rain_forecasts")
-    print(rain_forecasts)
-    print("rain_time")
-    print(rain_time)
-    
-
 
     if len(target_period_forecasts) == 0:
         return None
@@ -229,12 +190,7 @@ def parse_open_weather_map_forecast_response(response, location, time, conf):
 def intent_received(hermes, intent_message):
 
     conf = read_configuration_file(CONFIG_INI)
-    print("CONF")
-    print(conf)
-
-    print(remove_intent_prefix(intent_message.intent.intent_name))
-
-
+    
     if remove_intent_prefix(intent_message.intent.intent_name) in ['searchWeatherForecast', 'searchWeatherForecastTemperature', 'searchWeatherForecastItem', 'searchWeatherForecastCondition']:
 
 
@@ -246,6 +202,7 @@ def intent_received(hermes, intent_message):
 
         else:
             if weather_forecast["now"]:
+
                 sentence = "Il fait {0}".format(weather_forecast["temperature"])
                 if not weather_forecast["here"]:
                     sentence += weather_forecast["inLocation"]
@@ -256,9 +213,8 @@ def intent_received(hermes, intent_message):
                     sentence += " Il pleut."
 
             else:
-                print(slots.forecast_start_datetime[0])
+
                 sentence = slots.forecast_start_datetime[0].raw_value
-                print(sentence)
                 sentence += (", il va faire entre {0} et {1}").format(
                     weather_forecast["temperatureMin"], 
                     weather_forecast["temperatureMax"]
