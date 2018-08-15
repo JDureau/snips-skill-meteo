@@ -92,10 +92,10 @@ def get_weather_forecast(conf, slots):
 
     print(forecast_url)
 
-    return parse_open_weather_map_forecast_response(r_forecast.json(), location, time)
+    return parse_open_weather_map_forecast_response(r_forecast.json(), location, time, conf)
 
 
-def parse_open_weather_map_forecast_response(response, location, time):
+def parse_open_weather_map_forecast_response(response, location, time, conf):
     '''
     Parse the output of Open Weather Map's forecast endpoint
     '''
