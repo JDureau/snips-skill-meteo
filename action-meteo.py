@@ -115,19 +115,18 @@ def parse_open_weather_map_forecast_response(response, location, time):
 
         distances = map(lambda forecast: abs(pytz.utc.localize(fromtimestamp(forecast["dt"]))-date), response["list"])
         val, idx = min((val, idx) for (idx, val) in enumerate(distances))
-
-        print(distances)
-        print(val)
-        print(idx)
-        print(fromtimestamp(response["list"][idx]["dt"]))
-
         target_period_forecasts = [response["list"][idx]]
 
     else:
         # NOW
-        target_period_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"]).day==today, response["list"])
-        print("TODAY")
-        print(len(target_period_forecasts))
+        date = datetime.utcnow()
+
+        distances = map(lambda forecast: abs(pytz.utc.localize(fromtimestamp(forecast["dt"]))-date), response["list"])
+        val, idx = min((val, idx) for (idx, val) in enumerate(distances))
+        target_period_forecasts = [response["list"][idx]]
+
+        print(idx)
+        print(fromtimestamp(response["list"][idx]["dt"]))
 
     future_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"])>=datetime.datetime.now(), target_period_forecasts)
 
