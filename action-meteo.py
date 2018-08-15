@@ -164,6 +164,9 @@ def intent_received(hermes, intent_message):
     slots = intent_message.slots
     weather_forecast = get_weather_forecast(conf, slots)
 
+    print(intent_message.intent.intent_name)
+
+
 
     if intent_message.intent.intent_name == 'searchWeatherForecast':
         sentence = (    "Il fait {0}. " 
