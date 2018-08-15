@@ -33,6 +33,11 @@ WEATHER_API_BASE_URL = "http://api.openweathermap.org/data/2.5"
 DEFAULT_CITY_NAME = "Clichy"
 UNITS = "metric" 
 
+def remove_intent_prefix(full_intent_name):
+    if ":" in full_intent_name:
+        return full_intent_name[full_intent_name.find(":")+1:]
+    else:
+        return full_intent_name
 
 def verbalise_hour(i):
     if i == 0:
@@ -164,11 +169,11 @@ def intent_received(hermes, intent_message):
     slots = intent_message.slots
     weather_forecast = get_weather_forecast(conf, slots)
 
-    print(intent_message.intent.intent_name)
+    print(remove_intent_prefix(intent_message.intent.intent_name))
 
 
 
-    if intent_message.intent.intent_name == 'searchWeatherForecast':
+    if remove_intent_prefix(intent_message.intent.intent_name) == 'searchWeatherForecast':
         sentence = (    "Il fait {0}. " 
                     "Il va faire entre {1} et {2}."
         ).format(
