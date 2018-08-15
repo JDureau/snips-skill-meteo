@@ -125,17 +125,26 @@ def parse_open_weather_map_forecast_response(response, location, time):
         val, idx = min((val, idx) for (idx, val) in enumerate(distances))
         target_period_forecasts = [response["list"][idx]]
 
-        print(idx)
-        print(fromtimestamp(response["list"][idx]["dt"]))
 
-    future_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"])>=datetime.datetime.now(), target_period_forecasts)
-
-    all_min = [x["main"]["temp_min"] for x in future_forecasts]
-    all_max = [x["main"]["temp_max"] for x in future_forecasts]
-    all_conditions = [x["weather"][0]["main"] for x in future_forecasts]
-    rain_forecasts = filter(lambda forecast: forecast["weather"][0]["main"] == "Rain", future_forecasts)
+    all_min = [x["main"]["temp_min"] for x in target_period_forecasts]
+    all_max = [x["main"]["temp_max"] for x in target_period_forecasts]
+    all_conditions = [x["weather"][0]["main"] for x in target_period_forecasts]
+    rain_forecasts = filter(lambda forecast: forecast["weather"][0]["main"] == "Rain", target_period_forecasts)
     rain_time = fromtimestamp(rain_forecasts[0]["dt"]).hour if len(rain_forecasts) > 0 else None
     
+    print("all_min")
+    print(all_min)
+    print("all_max")
+    print(all_max)
+    print("all_conditions")
+    print(all_conditions)
+    print("rain_forecasts")
+    print(rain_forecasts)
+    print("rain_time")
+    print(rain_time)
+    
+
+
     return {
         "location": location,
         "inLocation": " in {0}".format(location) if location else "",         
