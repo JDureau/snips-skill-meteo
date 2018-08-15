@@ -70,16 +70,15 @@ def get_weather_forecast(conf, slots):
     '''
     Parse the query slots, and fetch the weather forecast from Open Weather Map's API
     '''
-    location = DEFAULT_CITY_NAME
 
 
-    locality = conf.get("default_city")
+    location = conf.get("default_city")
     time = None
 
     for (slot_value, slot) in slots.items():
         print(slot_value)
         if slot_value in ["forecast_locality", "forecast_country", "forecast_region", "forecast_geographical_poi"]:
-            locality = slot[0].slot_value.value.value
+            location = slot[0].slot_value.value.value
         elif slot_value == "forecast_start_datetime":
             print("GOT TIME")
             time = slot[0].slot_value.value
