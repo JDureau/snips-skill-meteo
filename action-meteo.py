@@ -71,9 +71,11 @@ def get_weather_forecast(conf, slots):
     time = None
 
     for (slot_value, slot) in slots.items():
+        print(slot_value)
         if slot_value in ["forecast_locality", "forecast_country", "forecast_region", "forecast_geographical_poi", "forecast_start_datetime", "forecast_condition_name"]:
             locality = slot[0].slot_value.value.value
         elif slot_value == "forecast_start_datetime":
+            print("GOT TIME")
             time = slot[0].slot_value.value.value
 
 
