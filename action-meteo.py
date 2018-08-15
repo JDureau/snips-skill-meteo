@@ -67,7 +67,7 @@ def get_weather_forecast(conf, slots):
     location = DEFAULT_CITY_NAME
 
 
-    for (slot_value, slot) in intent_message.slots.items():
+    for (slot_value, slot) in slots.items():
         print('Slot {} -> \n\tRaw: {} \tValue: {}'.format(slot_value, slot[0].raw_value, slot[0].slot_value.value.value))
 ​
 
