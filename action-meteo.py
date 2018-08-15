@@ -67,14 +67,14 @@ def get_weather_forecast(conf, slots):
     location = DEFAULT_CITY_NAME
 
 
-    for (slot_value, slot) in slots.items():
-        print('Slot {} -> \n\tRaw: {} \tValue: {}'.format(slot_value, slot[0].raw_value, slot[0].slot_value.value.value))
+    locality = conf.get("DEFAULT_CITY_NAME")
 
-    time = slots.forecast_start_datetime.first()
-    print()
-    print(time)
+    for (slot_value, slot) in slots.items():
+        if slot_value in ["forecast_locality", "forecast_country", "forecast_region", "forecast_geographical_poi", "forecast_start_datetime", "forecast_condition_name"]:
+            locality = slot[0].slot_value.value.value
+
     forecast_url = "{0}/forecast?q={1}&APPID={2}&units={3}".format(
-        WEATHER_API_BASE_URL, conf.get("DEFAULT_CITY_NAME"), conf["global"].get("weather_api_key"), UNITS)
+        WEATHER_API_BASE_URL, locality, conf["global"].get("weather_api_key"), UNITS)
     r_forecast = requests.get(forecast_url)
     print()
     print(forecast_url)
