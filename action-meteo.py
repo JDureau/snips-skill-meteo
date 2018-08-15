@@ -153,7 +153,7 @@ def parse_open_weather_map_forecast_response(response, location, time, conf):
             day = dateutil.parser.parse(time.value).day
             print(day)
 
-            target_period_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"]).day == day, forecastresponse["list"])
+            target_period_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"]).day == day, response["list"])
             print(target_period_forecasts)
 
         else:
