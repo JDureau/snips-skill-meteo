@@ -102,6 +102,10 @@ def parse_open_weather_map_forecast_response(response, location, time, conf):
 
     now = False
     contains_now = False
+    print("location")
+    print(location)
+    print(conf.get("DEFAULT_CITY_NAME"))
+    print(location == conf.get("DEFAULT_CITY_NAME"))
     here = (location == conf.get("DEFAULT_CITY_NAME"))
 
     if isinstance(time, TimeIntervalValue):
@@ -188,7 +192,7 @@ def intent_received(hermes, intent_message):
     if remove_intent_prefix(intent_message.intent.intent_name) == 'searchWeatherForecast':
 
         if weather_forecast["now"]:
-            sentence = "Il fait {0}"
+            sentence = "Il fait {0}".format(weather_forecast["temperature"])
             if not weather_forecast["here"]:
                 sentence += weather_forecast["inLocation"]
 
