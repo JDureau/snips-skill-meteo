@@ -96,7 +96,7 @@ def parse_open_weather_map_forecast_response(response, location, time):
     print(time)
     print(type(time))
 
-    if value.get("kind", None) == "TimeInterval":
+    if isinstance(time, TimeIntervalValue):
         print("INTERVAL!!")
         target_period_forecasts = filter(
             lambda forecast: 
