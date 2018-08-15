@@ -103,6 +103,7 @@ def parse_open_weather_map_forecast_response(response, location, time, conf):
 
     now = False
     contains_now = False
+    more_than_a_day = False
     print("location")
     print(location)
     print(conf.get("default_city"))
@@ -114,6 +115,8 @@ def parse_open_weather_map_forecast_response(response, location, time, conf):
 
         from_date = dateutil.parser.parse(time.from_date)
         to_date = dateutil.parser.parse(time.to_date)
+
+        more_than_a_day = (from_date.day != to_date.day)
 
         print(from_date)
         print(to_date)
@@ -163,6 +166,8 @@ def parse_open_weather_map_forecast_response(response, location, time, conf):
             print("DAY")
             date = dateutil.parser.parse(time.value)
 
+            more_than_a_day = True
+
             print(date)
 
             target_period_forecasts = filter(lambda forecast: pytz.utc.localize(fromtimestamp(forecast["dt"])) >= date, response["list"])
@@ -211,6 +216,7 @@ def parse_open_weather_map_forecast_response(response, location, time, conf):
         "now": now,
         "containsNow": contains_now,
         "here": here,
+        "moreThanADay": more_than_a_day,
         "inLocation": " à {0}".format(location) if location else "",         
         "temperature": int(target_period_forecasts[0]["main"]["temp"]),
         "temperatureMin": int(min(all_min)),
@@ -263,7 +269,7 @@ def intent_received(hermes, intent_message):
 
                 sentence += "."
 
-                if weather_forecast["rainTime"]:
+                if weather_forecast["rainTime"] and not weather_forecast["moreThanADay"]:
                     sentence += " Il risque de pleuvoir à {0}.".format(verbalise_hour(weather_forecast["rainTime"]))
 
         hermes.publish_end_session(intent_message.session_id, sentence)
