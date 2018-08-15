@@ -138,6 +138,7 @@ def parse_open_weather_map_forecast_response(response, location, time, conf):
 
     elif isinstance(time, InstantTimeValue):
         print("INSTANT TIME!!")
+        print(time.grain)
 
         if time.grain in ["Hour", "Minute"]:
             date = dateutil.parser.parse(time.value)
@@ -154,6 +155,11 @@ def parse_open_weather_map_forecast_response(response, location, time, conf):
 
             target_period_forecasts = filter(lambda forecast: fromtimestamp(forecast["dt"]).day == day, forecastresponse["list"])
             print(target_period_forecasts)
+
+        else:
+            return None
+
+            
     else:
         # NOW
         now = True
