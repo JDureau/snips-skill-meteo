@@ -119,7 +119,7 @@ def parse_open_weather_map_forecast_response(response, location, time):
 
     else:
         # NOW
-        date = datetime.datetime.utcnow()
+        date = pytz.utc.localize(datetime.datetime.utcnow())
 
         distances = map(lambda forecast: abs(pytz.utc.localize(fromtimestamp(forecast["dt"]))-date), response["list"])
         val, idx = min((val, idx) for (idx, val) in enumerate(distances))
