@@ -119,6 +119,7 @@ def parse_open_weather_map_forecast_response(response, location, time):
         print(distances)
         print(val)
         print(idx)
+        print(fromtimestamp(response["list"][idx]))
 
         target_period_forecasts = [response["list"][idx]]
 
