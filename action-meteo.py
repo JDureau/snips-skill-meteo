@@ -74,7 +74,7 @@ def get_weather_forecast(conf, slots):
             locality = slot[0].slot_value.value.value
 
     forecast_url = "{0}/forecast?q={1}&APPID={2}&units={3}".format(
-        WEATHER_API_BASE_URL, locality, conf["global"].get("weather_api_key"), UNITS)
+        WEATHER_API_BASE_URL, locality, conf["secret"].get("weather_api_key"), UNITS)
     r_forecast = requests.get(forecast_url)
     print()
     print(forecast_url)
@@ -135,6 +135,8 @@ def parse_open_weather_map_forecast_response(response, location, time):
 def intent_received(hermes, intent_message):
 
     conf = read_configuration_file(CONFIG_INI)
+    print("CONF")
+    print(conf)
     slots = intent_message.slots
     weather_forecast = get_weather_forecast(conf, slots)
 
