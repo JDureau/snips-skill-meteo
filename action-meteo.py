@@ -83,6 +83,8 @@ def get_weather_forecast(conf, slots):
         WEATHER_API_BASE_URL, locality, conf["secret"].get("weather_api_key"), UNITS)
     r_forecast = requests.get(forecast_url)
 
+    print(forecast_url)
+
     return parse_open_weather_map_forecast_response(r_forecast.json(), location, time)
 
 
@@ -103,6 +105,7 @@ def parse_open_weather_map_forecast_response(response, location, time):
         print(time.from_date)
         print('to')
         print(time.to_date)
+        forecast = response["list"][0] 
         print(fromtimestamp(forecast["dt"]))
         print(time.from_date <= fromtimestamp(forecast["dt"]))
         print(time.to_date >= fromtimestamp(forecast["dt"]))
