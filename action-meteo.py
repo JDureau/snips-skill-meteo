@@ -46,7 +46,7 @@ def verbalise_hour(i):
     elif i == 12:
         return "midi"
     elif i == 21:
-        return "ving et une heures"
+        return "vingt et une heures"
     else:
         return "{0} heures".format(str(i)) 
 
@@ -213,7 +213,7 @@ def intent_received(hermes, intent_message):
     print(remove_intent_prefix(intent_message.intent.intent_name))
 
 
-    if remove_intent_prefix(intent_message.intent.intent_name) == 'searchWeatherForecast':
+    if remove_intent_prefix(intent_message.intent.intent_name) in ['searchWeatherForecast', 'searchWeatherForecastTemperature', 'searchWeatherForecastItem', 'searchWeatherForecastCondition']:
 
 
         slots = intent_message.slots
