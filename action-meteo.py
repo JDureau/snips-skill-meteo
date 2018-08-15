@@ -66,10 +66,12 @@ def get_weather_forecast(conf, slots):
     '''
     location = DEFAULT_CITY_NAME
 
-    print()
-    print(len(slots.forecast_start_datetime))
-    print(slots.forecast_start_datetime[0])
-    print()
+
+    for (slot_value, slot) in intent_message.slots.items():
+        print('Slot {} -> \n\tRaw: {} \tValue: {}'.format(slot_value, slot[0].raw_value, slot[0].slot_value.value.value))
+​
+
+    city = 
     time = slots.forecast_start_datetime.first()
     print()
     print(time)
