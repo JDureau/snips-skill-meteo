@@ -3,7 +3,7 @@
 
 import ConfigParser
 from hermes_python.hermes import Hermes
-from hermes_python.ontology import *
+from hermes_python.ontology.dialogue import *
 import io
 
 import datetime
@@ -76,15 +76,17 @@ def get_weather_forecast(conf, slots):
     Parse the query slots, and fetch the weather forecast from Open Weather Map's API
     '''
 
-    location = conf.get("default_city")
+    location = conf["secret"].get("default_city")
     time = None
 
-    for (slot_value, slot) in slots.items():
-        if slot_value in ["forecast_locality", "forecast_country", "forecast_region", "forecast_geographical_poi"]:
-            location = slot[0].slot_value.value.value
-        elif slot_value == "forecast_start_datetime":
-            time = slot[0].slot_value.value
+    if slots is not None:
+      for slot_value in ["forecast_locality", "forecast_country", "forecast_region", "forecast_geographical_poi"]:
+          if slots[slot_value]:
+              location = slots[slot_value][0].slot_value.value.value
 
+      if slots.forecast_start_datetime:
+          time = slots.forecast_start_datetime[0].slot_value.value            
+            
 
     forecast_url = "{0}/forecast?q={1}&APPID={2}&units={3}".format(
         WEATHER_API_BASE_URL, location, conf["secret"].get("weather_api_key"), UNITS)
